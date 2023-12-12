@@ -45,10 +45,15 @@ services:
         EOF
         /run.sh
     image: harbinfo.iutmontp.univ-montp2.fr/proxy_dockerhub/grafana/grafana:latest
-    ports:
-      - "3000:3000"
     networks:
       - loki
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{grafana}-web.rule=Host(‘{grafana.td.anthonymoll.fr}‘)"
+      - "traefik.http.routers.{grafana}-web.entrypoints=web"
+      - "traefik.http.services.{grafana}.loadbalancer.server.port={3000}"
 
 networks:
   loki:
