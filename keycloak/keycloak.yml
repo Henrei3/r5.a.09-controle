@@ -1,0 +1,32 @@
+version: '3.0'
+
+services: 
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    ports:
+      - "8082:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin 
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: 
+      - start-dev 
+      - --import-realm
+    networks:
+      - external
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{keycloak}-web.rule=Host(`keycloak.td.anthonymoll.fr`)"
+      - "traefik.http.routers.{keycloak}-web.entrypoints=web"
+      - "traefik.http.services.{keycloak}.loadbalancer.server.port=8080"
+    logging:
+      driver: loki
+      options:
+          loki-url: http://127.0.0.1:3100/loki/api/v1/push
+          loki-pipeline-stages: |
+            - regex:
+                expression: ’(level|lvl|severity)=(?P<level>\w+)’
+            - labels:
+                level:
+networks:
+  external:
+    external: true

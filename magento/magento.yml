@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  matomo:
+    image: matomo:latest
+    container_name: matomo-container
+    ports:
+      - "8080:80"
+    environment:
+      - MATOMO_DATABASE_HOST=db
+      - MATOMO_DATABASE_PORT=3306
+      - MATOMO_DATABASE_ADAPTER=mysql
+      - MATOMO_DATABASE_TABLES_PREFIX=matomo_
+      - MATOMO_DATABASE_USER=matomo
+      - MATOMO_DATABASE_PASSWORD=your_matomo_password
+      - MATOMO_DATABASE_NAME=matomo
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{magento}-web.rule=Host(`magento.td.anthonymoll.fr`)"
+      - "traefik.http.routers.{magento}-web.entrypoints=web"
+      - "traefik.http.services.{magento}.loadbalancer.server.port=80"
+      
+    logging:
+      driver: loki
+      options:
+          loki-url: http://127.0.0.1:3100/loki/api/v1/push
+          loki-pipeline-stages: |
+            - regex:
+                expression: ’(level|lvl|severity)=(?P<level>\w+)’
+            - labels:
+                level:
+
+  db:
+    image: mysql:latest
+    container_name: matomo-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=your_root_password
+      - MYSQL_DATABASE=matomo
+      - MYSQL_USER=matomo
+      - MYSQL_PASSWORD=your_matomo_password
+    volumes:
+      - ./db-data:/var/lib/mysql
+
+    networks:
+     - 

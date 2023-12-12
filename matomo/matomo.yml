@@ -14,7 +14,7 @@ services:
     networks:
       - external
     env_file:
-      - ./dbmatomo.env
+      - ./dbmat.env
 
   app:
     image: matomo
@@ -24,7 +24,7 @@ services:
     environment:
       - MATOMO_DATABASE_HOST=db
     env_file:
-      - ./dbmatomo.env
+      - ./dbmat.env
     ports:
       - 8083:80
     labels:
