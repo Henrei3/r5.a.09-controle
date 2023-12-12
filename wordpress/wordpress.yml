@@ -2,7 +2,7 @@ version: '3'
 
 services:
   # Service MySQL pour WordPress
-  db:
+  wordpress_db:
     image: mysql:5.7
     platform: linux/amd64  # Spécifiez l'architecture x86_64 si vous utilisez un système x86_64
     volumes:
@@ -30,7 +30,7 @@ services:
     volumes:
       - wordpress_data:/var/www/html
     environment:
-      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_HOST: wordpress_db
       WORDPRESS_DB_USER: your_wordpress_user
       WORDPRESS_DB_PASSWORD: your_wordpress_password
       WORDPRESS_DB_NAME: your_wordpress_database

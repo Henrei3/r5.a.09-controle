@@ -5,7 +5,7 @@ services:
     image: matomo:latest
     container_name: matomo-container
     ports:
-      - "8080:80"
+      - "8084:80"
     environment:
       - MATOMO_DATABASE_HOST=db
       - MATOMO_DATABASE_PORT=3306
@@ -21,7 +21,7 @@ services:
       - "traefik.http.routers.{magento}-web.rule=Host(`magento.td.anthonymoll.fr`)"
       - "traefik.http.routers.{magento}-web.entrypoints=web"
       - "traefik.http.services.{magento}.loadbalancer.server.port=80"
-      
+
     logging:
       driver: loki
       options:
@@ -43,5 +43,6 @@ services:
     volumes:
       - ./db-data:/var/lib/mysql
 
-    networks:
-     - 
+networks:
+  external:
+    external: true

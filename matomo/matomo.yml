@@ -16,7 +16,7 @@ services:
     env_file:
       - ./dbmat.env
 
-  app:
+  matomo:
     image: matomo
     restart: always
     volumes:
